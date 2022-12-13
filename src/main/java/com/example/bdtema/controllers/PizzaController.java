@@ -71,4 +71,8 @@ public class PizzaController {
 
         return "redirect:/menu";
     }
+    @GetMapping("/contacts")
+    public String contactsPage(Model model){
+        return "contacts";
+    }
 }
