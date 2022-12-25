@@ -50,6 +50,7 @@
       <textarea type="text" id="address" class="form-control" placeholder="Address" rows="3" th:field="*{address}"></textarea>
       <br>
       <select class="form-select" aria-label="Select Type of Payment" th:field="*{payment}">
+        <option value="0">Select Type of Payment</option>
         <option value="1">Cash</option>
         <option value="2">Debit Card</option>
       </select>
