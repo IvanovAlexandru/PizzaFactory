@@ -9,9 +9,11 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class IngredientModel {
+public class SauceModel {
 
-    public String id;
-    public String name;
+    private Integer id;
+    private String name;
+    private String description;
+    private String imagePath;
 
 }

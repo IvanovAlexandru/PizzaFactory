@@ -1,6 +1,8 @@
 package com.example.bdtema.controllers;
 
 import com.example.bdtema.models.DeliveryModel;
+import com.example.bdtema.models.PizzaModel;
+import com.example.bdtema.models.SauceModel;
 import com.example.bdtema.repositories.DeliveryRepository;
 import com.example.bdtema.repositories.PizzaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.sql.*;
+import java.util.List;
 
 
 @Controller
@@ -42,16 +45,15 @@ public class PizzaController {
     @GetMapping("/home")
     public String indexPage(Model model) throws SQLException {
 
-        ResultSet allIngredients = pizzaRepository.getAllPizzas(con);
-        allIngredients.next();
-
-        model.addAttribute("ingredients",allIngredients.getObject(1));
 
         return "index";
 
     }
     @GetMapping("/menu")
-    public String menuPage(Model model){
+    public String menuPage(Model model) throws SQLException {
+
+        List<PizzaModel> allPizzas = pizzaRepository.getAllPizzas(con);
+        model.addAttribute("allPizzas",allPizzas);
 
         return "menu";
     }
@@ -75,4 +77,15 @@ public class PizzaController {
     public String contactsPage(Model model){
         return "contacts";
     }
+
+    @GetMapping("/sauces")
+    public String saucesPage(Model model) throws SQLException {
+
+        List<SauceModel> sauceModels = pizzaRepository.getAllSauces(con);
+        model.addAttribute("allSauces",sauceModels);
+
+        return "sauce";
+    }
+
+
 }

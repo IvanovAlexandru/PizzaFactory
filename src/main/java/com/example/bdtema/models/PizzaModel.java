@@ -11,17 +11,9 @@ import lombok.Setter;
 @NoArgsConstructor
 public class PizzaModel {
 
-    private int id;
+    private Integer id;
     private String name;
-    private String[] ingredients;
     private String description;
     private String imagePath;
-
-    public PizzaModel(int id, String name, String[] ingredients, String description) {
-        this.id = id;
-        this.name = name;
-        this.ingredients = ingredients;
-        this.description = description;
-    }
 
 }
