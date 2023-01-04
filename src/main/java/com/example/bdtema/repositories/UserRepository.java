@@ -64,4 +64,14 @@ public class UserRepository {
         }
         else return true;
     }
+
+    public Integer getIdByUsername(Connection connection,String user) throws SQLException {
+
+        String query = "select * from users where email = '"+ user + "'" + ";";
+
+        Statement statement = connection.createStatement();
+        ResultSet id = statement.executeQuery(query);
+        id.next();
+        return id.getInt("id");
+    }
 }

@@ -47,13 +47,15 @@
       </div>
     </div>
   </nav>
+  <h1 class="container-fluid text-white" th:text="${userName}"></h1>
   <div class="container-fluid">
     <div style="display: grid; grid-template-columns:1fr 1fr 1fr;">
-      <div class="card m-4" th:each="sauce : ${allSauces}" style="width: 30rem;">
-        <img th:src="${sauce.getImagePath()}" class="card-img-top mt-3" alt="Couldn't load image">
+      <div class="card m-4" th:each="delivery : ${userDelivery}" style="width: 20rem;">
         <div class="card-body">
-          <h5 class="card-title" th:text="${sauce.getName()}"></h5>
-          <p class="card-text" th:text="${sauce.getDescription()}"></p>
+          <h5 class="card-title" th:text="${delivery.getName()}"></h5>
+          <p class="card-text" th:text="${delivery.getAddress()}"></p>
+          <p class="card-text" th:text="${delivery.getDate()}"></p>
+          <p class="card-text" th:text="${delivery.getPayment()}"></p>
           <a href="#" class="btn btn-primary">Go somewhere</a>
         </div>
       </div>

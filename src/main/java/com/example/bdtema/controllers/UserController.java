@@ -24,6 +24,7 @@ public class UserController {
 
     private final UserRepository userRepository;
 
+    public static String userName = null;
     @Autowired
     public UserController(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -54,7 +55,8 @@ public class UserController {
         boolean verifyUser = userRepository.findUser(con,userModel);
 
         if(verifyUser){
-            return "redirect:/home";
+            userName = userModel.getEmail();
+            return "redirect:/";
         }
         else {
             return "redirect:/login";

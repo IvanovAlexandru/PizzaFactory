@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.sql.*;
 import java.util.List;
 
+import static com.example.bdtema.controllers.UserController.userName;
+
 
 @Controller
 public class PizzaController {
@@ -42,11 +44,15 @@ public class PizzaController {
         this.deliveryRepository = deliveryRepository;
     }
 
-    @GetMapping("/home")
+    @GetMapping("/")
     public String indexPage(Model model) throws SQLException {
 
-
-        return "index";
+        if(userName == null){
+            return "redirect:/login";
+        }
+        else {
+            return "index";
+        }
 
     }
     @GetMapping("/menu")
@@ -54,8 +60,14 @@ public class PizzaController {
 
         List<PizzaModel> allPizzas = pizzaRepository.getAllPizzas(con);
         model.addAttribute("allPizzas",allPizzas);
+        model.addAttribute("userName",userName);
 
-        return "menu";
+        if(userName == null){
+            return "redirect:/login";
+        }
+        else {
+            return "menu";
+        }
     }
     @GetMapping("/delivery")
     public String deliveryPage(Model model){
@@ -63,19 +75,30 @@ public class PizzaController {
         DeliveryModel deliveryModel = new DeliveryModel();
         model.addAttribute("deliveryModel",deliveryModel);
 
-        return "delivery";
+        if(userName == null){
+            return "redirect:/login";
+        }
+        else {
+            return "delivery";
+        }
     }
 
     @PostMapping("/newDelivery")
     public String deliveryTest(@ModelAttribute("deliveryModel") DeliveryModel deliveryModel) throws SQLException {
 
         deliveryRepository.addDelivery(con,deliveryModel);
-
+        deliveryRepository.addDeliveryToUser(con,userName,deliveryModel);
         return "redirect:/menu";
     }
     @GetMapping("/contacts")
     public String contactsPage(Model model){
-        return "contacts";
+
+        if(userName == null){
+            return "redirect:/login";
+        }
+        else {
+            return "contacts";
+        }
     }
 
     @GetMapping("/sauces")
@@ -84,8 +107,20 @@ public class PizzaController {
         List<SauceModel> sauceModels = pizzaRepository.getAllSauces(con);
         model.addAttribute("allSauces",sauceModels);
 
-        return "sauce";
+        if(userName == null){
+            return "redirect:/login";
+        }
+        else {
+            return "sauce";
+        }
     }
+    @GetMapping("/deliveries")
+    public String deliveriesPage(Model model) throws SQLException {
 
+        model.addAttribute("userName",userName);
+        model.addAttribute("userDelivery",deliveryRepository.getDeliveriesForUser(con,userName));
+
+        return "deliveries";
+    }
 
 }
