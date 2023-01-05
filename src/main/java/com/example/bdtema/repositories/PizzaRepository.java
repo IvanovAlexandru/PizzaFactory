@@ -25,8 +25,9 @@ public class PizzaRepository {
             String name = resultSet.getString("name");
             String description = resultSet.getString("description");
             String imagePath = resultSet.getString("image_path");
+            int price = resultSet.getInt("price");
 
-            PizzaModel pizza = new PizzaModel(i,name,description,imagePath);
+            PizzaModel pizza = new PizzaModel(i,name,description,imagePath,price);
             ll.add(pizza);
         }
         return ll;
@@ -46,10 +47,35 @@ public class PizzaRepository {
             String name = resultSet.getString("name");
             String description = resultSet.getString("description");
             String imagePath = resultSet.getString("image_path");
+            int price = resultSet.getInt("price");
 
-            SauceModel pizza = new SauceModel(i,name,description,imagePath);
+            SauceModel pizza = new SauceModel(i,name,description,imagePath,price);
             ll.add(pizza);
         }
         return ll;
     }
+
+    public PizzaModel findPizzaById(Connection connection,Integer id) throws SQLException {
+
+        String query = "select * from pizza where id = " + id + ";";
+        Statement statement = connection.createStatement();
+        ResultSet pizza = statement.executeQuery(query);
+
+        pizza.next();
+        return new PizzaModel(pizza.getInt("id"),pizza.getString("name"),pizza.getString("description")
+                ,pizza.getString("image_path"),pizza.getInt("price"));
+
+    }
+    public SauceModel findSauceById(Connection connection,Integer id) throws SQLException {
+
+        String query = "select * from sauce where id = " + id + ";";
+        Statement statement = connection.createStatement();
+        ResultSet sauce = statement.executeQuery(query);
+
+        sauce.next();
+        return new SauceModel(sauce.getInt("id"),sauce.getString("name"),sauce.getString("description")
+                ,sauce.getString("image_path"),sauce.getInt("price"));
+
+    }
+
 }

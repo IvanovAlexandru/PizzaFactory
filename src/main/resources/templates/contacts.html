@@ -28,10 +28,10 @@
             </a>
             <ul class="dropdown-menu">
               <li><a class="dropdown-item" href="/sauces">Sauces</a></li>
-              <li><a class="dropdown-item" href="/delivery">Make A Delivery Request</a></li>
+              <li><a class="dropdown-item" href="/delivery">Add A Delivery Address</a></li>
               <li><hr class="dropdown-divider"></li>
               <li><a class="dropdown-item" href="/contacts">Contacts</a></li>
-              <li><a class="dropdown-item" href="/deliveries">Your Deliveries</a></li>
+              <li><a class="dropdown-item" href="/deliveries">Your Orders</a></li>
             </ul>
           </li>
         </ul>
@@ -43,6 +43,7 @@
     </div>
   </nav>
 </div>
+<h3 class="container-fluid text-white indent-text" th:text=" 'Currently logged on: ' + ${userName}"></h3>
 <div class="container">
   <h1 class="text-white">Contact Us</h1>
   <br>

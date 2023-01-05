@@ -30,7 +30,7 @@ public class DeliveryRepository {
                 + deliveryModel.getAddress() + "'" + ","
                 + deliveryModel.getPayment() + "," + "'"
                 + LocalDateTime.now() +  "'" + ");";
-        String getId = "select * from delivery where name = '" + deliveryModel.getName() +"'" + ";";
+        String getId = "select * from delivery where address = '" + deliveryModel.getAddress() +"'" + ";";
 
         Statement statement = connection.createStatement();
 
@@ -51,18 +51,32 @@ public class DeliveryRepository {
         statement.executeUpdate(query);
     }
 
+    public void deleteDeliveryFromUser(Connection connection,String user,Integer id) throws SQLException {
+        Integer userId = userRepository.getIdByUsername(connection,user);
+        String query = "delete from user_deliveries where user_id = " + userId
+                + " and delivery_id = " + id + ";";
+        Statement statement = connection.createStatement();
+
+        statement.executeUpdate(query);
+    }
     public DeliveryModel getDeliveryById(Connection connection,Integer id) throws SQLException {
 
         String query = "select * from delivery where delivery_id = " + id + ";";
         Statement statement = connection.createStatement();
         ResultSet delivery = statement.executeQuery(query);
 
-        delivery.next();
-        return new DeliveryModel(delivery.getInt("delivery_id"),
-                delivery.getString("name"),
-                delivery.getString("address"),
-                delivery.getInt("payment_method"),
-                delivery.getDate("time"));
+
+        if(delivery.next()){
+            return new DeliveryModel(delivery.getInt("delivery_id"),
+                    delivery.getString("name"),
+                    delivery.getString("address"),
+                    delivery.getInt("payment_method"),
+                    delivery.getDate("time"));
+        }
+        else {
+            return new DeliveryModel();
+        }
+
     }
     public List<DeliveryModel> getDeliveriesForUser(Connection connection,String user) throws SQLException {
 
@@ -82,4 +96,13 @@ public class DeliveryRepository {
 
         return deliveryModels;
     }
+
+    public void deleteDeliveryById(Connection connection,Integer id) throws SQLException {
+
+        String query = "delete from delivery where delivery_id = " + id + ";";
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(query);
+
+    }
+
 }
