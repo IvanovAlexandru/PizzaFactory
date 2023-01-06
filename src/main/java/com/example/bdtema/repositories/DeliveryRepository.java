@@ -105,4 +105,16 @@ public class DeliveryRepository {
 
     }
 
+    public void updateDelivery(Connection connection,DeliveryModel deliveryModel) throws SQLException {
+
+        String query = "update delivery set name = '" + deliveryModel.getName() + "',"
+                + " address = '" + deliveryModel.getAddress() + "',"
+                + "payment_method = " + deliveryModel.getPayment()
+                + " where delivery_id = " + deliveryModel.getId() + ";";
+
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(query);
+
+    }
+
 }

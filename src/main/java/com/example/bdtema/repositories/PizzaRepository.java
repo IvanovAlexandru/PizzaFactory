@@ -78,4 +78,47 @@ public class PizzaRepository {
 
     }
 
+    public List<PizzaModel> getPizzaByKeyword(Connection connection,String keyword) throws SQLException {
+
+        String query = "select * from pizza where name ilike '%" + keyword + "%';";
+        Statement statement = connection.createStatement();
+
+        ResultSet resultSet = statement.executeQuery(query);
+
+        List<PizzaModel> ll = new ArrayList<>();
+
+        while (resultSet.next()){
+            int i = resultSet.getInt("id");
+            String name = resultSet.getString("name");
+            String description = resultSet.getString("description");
+            String imagePath = resultSet.getString("image_path");
+            int price = resultSet.getInt("price");
+
+            PizzaModel pizza = new PizzaModel(i,name,description,imagePath,price);
+            ll.add(pizza);
+        }
+        return ll;
+    }
+
+    public List<SauceModel> getSauceByKeyword(Connection connection,String keyword) throws SQLException {
+
+        String query = "select * from sauce where name ilike '%" + keyword + "%';";
+        Statement statement = connection.createStatement();
+
+        ResultSet resultSet = statement.executeQuery(query);
+
+        List<SauceModel> ll = new ArrayList<>();
+
+        while (resultSet.next()){
+            int i = resultSet.getInt("id");
+            String name = resultSet.getString("name");
+            String description = resultSet.getString("description");
+            String imagePath = resultSet.getString("image_path");
+            int price = resultSet.getInt("price");
+
+            SauceModel sauce = new SauceModel(i,name,description,imagePath,price);
+            ll.add(sauce);
+        }
+        return ll;
+    }
 }

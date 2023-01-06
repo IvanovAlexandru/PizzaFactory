@@ -1,17 +1,14 @@
 package com.example.bdtema.controllers;
 
-import com.example.bdtema.models.DeliveryModel;
 import com.example.bdtema.models.PizzaModel;
 import com.example.bdtema.models.SauceModel;
-import com.example.bdtema.repositories.DeliveryRepository;
 import com.example.bdtema.repositories.PizzaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -28,7 +25,6 @@ public class PizzaController {
 
     private final PizzaRepository pizzaRepository;
 
-    private final DeliveryRepository deliveryRepository;
     private static final String url = "jdbc:postgresql://localhost:5432/pizza";
     private static final String uname = "postgres";
     private static final String password = "admin";
@@ -43,21 +39,27 @@ public class PizzaController {
     }
 
     @Autowired
-    public PizzaController(PizzaRepository pizzaRepository, DeliveryRepository deliveryRepository) {
+    public PizzaController(PizzaRepository pizzaRepository) {
         this.pizzaRepository = pizzaRepository;
-        this.deliveryRepository = deliveryRepository;
     }
 
     @GetMapping("/")
-    public String indexPage(Model model) throws SQLException {
+    public String indexPage(Model model,String keyword) throws SQLException {
 
         model.addAttribute("userName",userName);
 
-        List<PizzaModel> allPizzas = pizzaRepository.getAllPizzas(con);
-        model.addAttribute("allPizzas",allPizzas);
-
-        List<SauceModel> sauceModels = pizzaRepository.getAllSauces(con);
-        model.addAttribute("allSauces",sauceModels);
+        if(keyword != null){
+            List<PizzaModel> allPizzas = pizzaRepository.getPizzaByKeyword(con,keyword);
+            model.addAttribute("allPizzas",allPizzas);
+            List<SauceModel> sauceModels = pizzaRepository.getSauceByKeyword(con,keyword);
+            model.addAttribute("allSauces",sauceModels);
+        }
+        else{
+            List<PizzaModel> allPizzas = pizzaRepository.getAllPizzas(con);
+            model.addAttribute("allPizzas",allPizzas);
+            List<SauceModel> sauceModels = pizzaRepository.getAllSauces(con);
+            model.addAttribute("allSauces",sauceModels);
+        }
 
         if(userName == null){
             return "redirect:/login";
@@ -68,10 +70,16 @@ public class PizzaController {
 
     }
     @GetMapping("/menu")
-    public String menuPage(Model model) throws SQLException {
+    public String menuPage(Model model,String keyword) throws SQLException {
 
-        List<PizzaModel> allPizzas = pizzaRepository.getAllPizzas(con);
-        model.addAttribute("allPizzas",allPizzas);
+        if(keyword != null){
+            List<PizzaModel> allPizzas = pizzaRepository.getPizzaByKeyword(con,keyword);
+            model.addAttribute("allPizzas",allPizzas);
+        }
+        else {
+            List<PizzaModel> allPizzas = pizzaRepository.getAllPizzas(con);
+            model.addAttribute("allPizzas",allPizzas);
+        }
         model.addAttribute("userName",userName);
 
         if(userName == null){
@@ -80,28 +88,6 @@ public class PizzaController {
         else {
             return "menu";
         }
-    }
-    @GetMapping("/delivery")
-    public String deliveryPage(Model model){
-
-        DeliveryModel deliveryModel = new DeliveryModel();
-        model.addAttribute("deliveryModel",deliveryModel);
-        model.addAttribute("userName",userName);
-
-        if(userName == null){
-            return "redirect:/login";
-        }
-        else {
-            return "delivery";
-        }
-    }
-
-    @PostMapping("/newDelivery")
-    public String deliveryTest(@ModelAttribute("deliveryModel") DeliveryModel deliveryModel) throws SQLException {
-
-        deliveryRepository.addDelivery(con,deliveryModel);
-        deliveryRepository.addDeliveryToUser(con,userName,deliveryModel);
-        return "redirect:/deliveries";
     }
     @GetMapping("/contacts")
     public String contactsPage(Model model){
@@ -141,10 +127,17 @@ public class PizzaController {
     }
 
     @GetMapping("/sauces")
-    public String saucesPage(Model model) throws SQLException {
+    public String saucesPage(Model model,String keyword) throws SQLException {
 
-        List<SauceModel> sauceModels = pizzaRepository.getAllSauces(con);
-        model.addAttribute("allSauces",sauceModels);
+        if(keyword != null){
+            List<SauceModel> sauceModels = pizzaRepository.getSauceByKeyword(con,keyword);
+            model.addAttribute("allSauces",sauceModels);
+        }
+        else {
+            List<SauceModel> sauceModels = pizzaRepository.getAllSauces(con);
+            model.addAttribute("allSauces",sauceModels);
+        }
+
         model.addAttribute("userName",userName);
 
         if(userName == null){
@@ -154,32 +147,5 @@ public class PizzaController {
             return "sauce";
         }
     }
-    @GetMapping("/deliveries")
-    public String deliveriesPage(Model model) throws SQLException {
 
-        model.addAttribute("userName",userName);
-        model.addAttribute("userDelivery",deliveryRepository.getDeliveriesForUser(con,userName));
-        model.addAttribute("bucketPizzas",pizzaModels);
-        model.addAttribute("bucketSauces",sauceModels);
-
-        if(userName == null){
-            return "redirect:/login";
-        }
-        else {
-            return "deliveries";
-        }
-    }
-   /* @PostMapping("/search/{searchParam}")
-    public String searchBar(){
-        return
-    }
-*/
-    @GetMapping("/delete/{id}")
-    public String deleteAddress(@PathVariable Integer id) throws SQLException {
-
-        deliveryRepository.deleteDeliveryById(con,id);
-        deliveryRepository.deleteDeliveryFromUser(con,userName,id);
-
-        return "redirect:/deliveries";
-    }
 }
