@@ -4,7 +4,6 @@ import com.example.bdtema.models.DeliveryModel;
 import com.example.bdtema.models.PizzaModel;
 import com.example.bdtema.models.SauceModel;
 import com.example.bdtema.repositories.DeliveryRepository;
-import com.example.bdtema.repositories.PizzaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
