@@ -40,6 +40,9 @@
               <li><a class="dropdown-item" href="/deliveries">Your Orders</a></li>
             </ul>
           </li>
+          <li>
+            <a th:href="@{/logOut}" class="btn btn-danger">Log Out</a>
+          </li>
         </ul>
       </div>
     </div>
@@ -48,12 +51,17 @@
   <br>
   <div class="container-fluid" style="width: 30rem;">
     <h2 class="text-white">Your Bucket List:</h2>
-    <ul class="list-group" th:each="pizza :${bucketPizzas}">
-      <li class="list-group-item-primary list-group-item" th:text="${pizza.getName() + ' ' + pizza.getPrice() + '$'}"></li>
-    </ul>
-    <ul class="list-group" th:each="sauce :${bucketSauces}">
-      <li class="list-group-item list-group-item-danger" th:text="${sauce.getName() + ' ' + sauce.getPrice() + '$'}"></li>
-    </ul>
+    <div style="display: grid; grid-template-columns:1fr 1fr;">
+      <ul class="list-group" >
+        <li class="list-group-item-primary list-group-item" th:each="pizza :${bucketList}" th:text="${pizza.getName() + ' ' + pizza.getPrice() + '$'}">
+        </li>
+      </ul>
+      <ul class="list-group">
+        <a th:href="@{/deleteMenu/{id}(id = ${pizza.getId()})}" th:each="pizza :${bucketList}">
+          <li class="btn btn-danger mb-1">Delete Item</li>
+        </a>
+      </ul>
+    </div>
     <h3 class="text-white" th:text="${'Total for this Order: ' + sumOfBucket + '$'}"></h3>
   </div>
   <div class="container-fluid">

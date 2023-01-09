@@ -3,6 +3,7 @@ package com.example.bdtema.controllers;
 import com.example.bdtema.models.PizzaModel;
 import com.example.bdtema.models.SauceModel;
 import com.example.bdtema.repositories.PizzaRepository;
+import com.example.bdtema.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,10 +21,8 @@ import static com.example.bdtema.controllers.UserController.userName;
 @Controller
 public class PizzaController {
 
-    public static List<SauceModel> sauceModels = new ArrayList<>();
-    public static List<PizzaModel> pizzaModels = new ArrayList<>();
-
     private final PizzaRepository pizzaRepository;
+    private final UserRepository userRepository;
 
     private static final String url = "jdbc:postgresql://localhost:5432/pizza";
     private static final String uname = "postgres";
@@ -39,8 +38,9 @@ public class PizzaController {
     }
 
     @Autowired
-    public PizzaController(PizzaRepository pizzaRepository) {
+    public PizzaController(PizzaRepository pizzaRepository, UserRepository userRepository) {
         this.pizzaRepository = pizzaRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/")
@@ -51,14 +51,10 @@ public class PizzaController {
         if(keyword != null){
             List<PizzaModel> allPizzas = pizzaRepository.getPizzaByKeyword(con,keyword);
             model.addAttribute("allPizzas",allPizzas);
-            List<SauceModel> sauceModels = pizzaRepository.getSauceByKeyword(con,keyword);
-            model.addAttribute("allSauces",sauceModels);
         }
         else{
             List<PizzaModel> allPizzas = pizzaRepository.getAllPizzas(con);
             model.addAttribute("allPizzas",allPizzas);
-            List<SauceModel> sauceModels = pizzaRepository.getAllSauces(con);
-            model.addAttribute("allSauces",sauceModels);
         }
 
         if(userName == null){
@@ -104,19 +100,8 @@ public class PizzaController {
     @GetMapping("/addPizzaToBucket/{id}")
     public String addPizzaToBucket(@PathVariable Integer id) throws SQLException {
 
-        pizzaModels.add(pizzaRepository.findPizzaById(con,id));
 
-        if(userName == null){
-            return "redirect:/login";
-        }
-        else {
-            return "redirect:/deliveries";
-        }
-    }
-    @GetMapping("/addSauceToBucket/{id}")
-    public String addSauceToBucket(@PathVariable Integer id) throws SQLException {
-
-        sauceModels.add(pizzaRepository.findSauceById(con,id));
+        pizzaRepository.addToBucketList(con,id,userRepository.getIdByUsername(con,userName));
 
         if(userName == null){
             return "redirect:/login";
@@ -130,11 +115,11 @@ public class PizzaController {
     public String saucesPage(Model model,String keyword) throws SQLException {
 
         if(keyword != null){
-            List<SauceModel> sauceModels = pizzaRepository.getSauceByKeyword(con,keyword);
+            List<PizzaModel> sauceModels = pizzaRepository.getPizzaByKeyword(con,keyword);
             model.addAttribute("allSauces",sauceModels);
         }
         else {
-            List<SauceModel> sauceModels = pizzaRepository.getAllSauces(con);
+            List<PizzaModel> sauceModels = pizzaRepository.getAllPizzas(con);
             model.addAttribute("allSauces",sauceModels);
         }
 

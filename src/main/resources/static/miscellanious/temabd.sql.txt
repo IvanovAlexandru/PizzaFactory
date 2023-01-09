@@ -22,20 +22,14 @@ create table users
 
 create table pizza
 (
-    id          integer,
+    id          integer not null
+        constraint pizza_pk
+            primary key,
     name        varchar(30),
     description varchar(200),
     image_path  varchar(50),
-    price       integer
-);
-
-create table sauce
-(
-    id          integer,
-    name        varchar(30),
-    description varchar(200),
-    image_path  varchar(50),
-    price       integer
+    price       integer,
+    type        integer
 );
 
 create table user_deliveries
@@ -46,6 +40,18 @@ create table user_deliveries
     delivery_id integer
         constraint delivery_id_fk
             references delivery
+);
+
+create table user_menu
+(
+    user_id integer
+        constraint user_id_fk
+            references users,
+    menu_id integer
+        constraint menu_id_uq
+            unique
+        constraint menu_id_fk
+            references pizza
 );
 
 create sequence seq_id
@@ -65,18 +71,25 @@ insert into pizza(id,name,description,image_path,price) values(4,Pizza Quattro F
 insert into pizza(id,name,description,image_path,price) values(5,Pizza Pollo,"Pizza Pollo is deliciously topped with tomato sauce, mozzarella and Edam cheeses, marinated pieces of chicken breast, tasty spinach and sweetcorn.",/images/pizza-pollo.jpg,24);
 insert into pizza(id,name,description,image_path,price) values(3,Pizza Quattro Stagione,"Quattro stagioni pizza or four seasons pizza is one of the best Italian pizzas out there, with artichokes, mushrooms, olives and ham.",/images/pizza-quatro-stagioni.jpg,25);
 insert into pizza(id,name,description,image_path,price) values(1,Pizza Margherita,"Pizza Margherita is basically a Neapolitan pizza, typically made with tomatoes, mozzarella cheese, garlic, fresh basil, and extra-virgin olive oil.",/images/pizza-test.jpg,20);
-
-insert into sauce(id,name,description,image_path,price) values(2,Spicy Tomato Sauce,"This spicy Arrabbiata Sauce recipe is super-simple to make, and is guaranteed to kick your pizza nights up a delicious notch.",/images/sos-de-rosii-picant-1383.jpg,4);
-insert into sauce(id,name,description,image_path,price) values(4,Barbecue Sauce,"A piquant sauce often containing vinegar, tomatoes, sugar, and spices, used especially for basting in barbecuing meat.",/images/1193.jpg.crdownload,4);
-insert into sauce(id,name,description,image_path,price) values(3,Garlic Sauce,"Garlic sauce is a sauce prepared using garlic as a primary ingredient. It is typically a pungent sauce, with the depth of garlic flavor determined by the amount of garlic used.",/images/sos-de-usturoi-03.jpg,4);
-insert into sauce(id,name,description,image_path,price) values(1,Sweet Tomato Sauce,"Tomato sauce is the concentrated product prepared from the liquid extracted from mature, sound, whole tomatoes",/images/IMG_5187-min.jpg,4);
-insert into sauce(id,name,description,image_path,price) values(5,Cocktail Sauce,Cocktail sauce is a cool or room temperature sauce that is made to enhance the flavors of pizza and much more. It is made of a tomato base and seasoned with horseradish and citrus.,/images/download.jpeg,4);
+insert into pizza(id,name,description,image_path,price) values(2,Spicy Tomato Sauce,"This spicy Arrabbiata Sauce recipe is super-simple to make, and is guaranteed to kick your pizza nights up a delicious notch.",/images/sos-de-rosii-picant-1383.jpg,4);
+insert into pizza(id,name,description,image_path,price) values(4,Barbecue Sauce,"A piquant sauce often containing vinegar, tomatoes, sugar, and spices, used especially for basting in barbecuing meat.",/images/1193.jpg.crdownload,4);
+insert into pizza(id,name,description,image_path,price) values(3,Garlic Sauce,"Garlic sauce is a sauce prepared using garlic as a primary ingredient. It is typically a pungent sauce, with the depth of garlic flavor determined by the amount of garlic used.",/images/sos-de-usturoi-03.jpg,4);
+insert into pizza(id,name,description,image_path,price) values(1,Sweet Tomato Sauce,"Tomato sauce is the concentrated product prepared from the liquid extracted from mature, sound, whole tomatoes",/images/IMG_5187-min.jpg,4);
+insert into pizza(id,name,description,image_path,price) values(5,Cocktail Sauce,Cocktail sauce is a cool or room temperature sauce that is made to enhance the flavors of pizza and much more. It is made of a tomato base and seasoned with horseradish and citrus.,/images/download.jpeg,4);
 
 insert into sauce(id,email,password) values(miraiv19@gmail.com,6ff9b1504a7c7e958731ff9c8ec3181c,11);
 insert into sauce(id,email,password) values(alexandruivanov8@gmail.com,8287458823facb8ff918dbfabcd22ccb,21);
 insert into sauce(id,email,password) values(alexandru.ivanov@student.tuiasi.ro,8287458823facb8ff918dbfabcd22ccb,31);
 insert into sauce(id,email,password) values(cosmin.resmerita@gmail.com,8287458823facb8ff918dbfabcd22ccb,32);
 insert into sauce(id,email,password) values(proiectbd@gmail.com,8287458823facb8ff918dbfabcd22ccb,33);
+
+insert into user_deliveries(user_id,delivery_id) values(21,56);
+insert into user_deliveries(user_id,delivery_id) values(21,59);
+insert into user_deliveries(user_id,delivery_id) values(21,60);
+insert into user_deliveries(user_id,delivery_id) values(21,61);
+insert into user_deliveries(user_id,delivery_id) values(21,66);
+
+
 
 
 

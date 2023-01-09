@@ -16,4 +16,5 @@ public class PizzaModel {
     private String description;
     private String imagePath;
     private Integer price;
+    private Integer type;
 }

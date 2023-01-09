@@ -1,14 +1,17 @@
 package com.example.bdtema.repositories;
 
+import com.example.bdtema.models.PizzaModel;
 import com.example.bdtema.models.UserModel;
 import org.springframework.stereotype.Repository;
 
+import java.net.ConnectException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 @Repository
 public class UserRepository {
@@ -74,4 +77,5 @@ public class UserRepository {
         id.next();
         return id.getInt("id");
     }
+
 }

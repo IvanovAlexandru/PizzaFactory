@@ -4,6 +4,7 @@ import com.example.bdtema.models.PizzaModel;
 import com.example.bdtema.models.SauceModel;
 import org.springframework.stereotype.Repository;
 
+import javax.swing.plaf.nimbus.State;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,30 +27,8 @@ public class PizzaRepository {
             String description = resultSet.getString("description");
             String imagePath = resultSet.getString("image_path");
             int price = resultSet.getInt("price");
-
-            PizzaModel pizza = new PizzaModel(i,name,description,imagePath,price);
-            ll.add(pizza);
-        }
-        return ll;
-    }
-
-    public List<SauceModel> getAllSauces(Connection connection) throws SQLException {
-        String query = "select * from sauce";
-
-        Statement statement = connection.createStatement();
-
-        ResultSet resultSet = statement.executeQuery(query);
-
-        List<SauceModel> ll = new ArrayList<>();
-
-        while (resultSet.next()){
-            int i = resultSet.getInt("id");
-            String name = resultSet.getString("name");
-            String description = resultSet.getString("description");
-            String imagePath = resultSet.getString("image_path");
-            int price = resultSet.getInt("price");
-
-            SauceModel pizza = new SauceModel(i,name,description,imagePath,price);
+            int type = resultSet.getInt("type");
+            PizzaModel pizza = new PizzaModel(i,name,description,imagePath,price,type);
             ll.add(pizza);
         }
         return ll;
@@ -63,21 +42,9 @@ public class PizzaRepository {
 
         pizza.next();
         return new PizzaModel(pizza.getInt("id"),pizza.getString("name"),pizza.getString("description")
-                ,pizza.getString("image_path"),pizza.getInt("price"));
+                ,pizza.getString("image_path"),pizza.getInt("price"),pizza.getInt("type"));
 
     }
-    public SauceModel findSauceById(Connection connection,Integer id) throws SQLException {
-
-        String query = "select * from sauce where id = " + id + ";";
-        Statement statement = connection.createStatement();
-        ResultSet sauce = statement.executeQuery(query);
-
-        sauce.next();
-        return new SauceModel(sauce.getInt("id"),sauce.getString("name"),sauce.getString("description")
-                ,sauce.getString("image_path"),sauce.getInt("price"));
-
-    }
-
     public List<PizzaModel> getPizzaByKeyword(Connection connection,String keyword) throws SQLException {
 
         String query = "select * from pizza where name ilike '%" + keyword + "%';";
@@ -93,32 +60,44 @@ public class PizzaRepository {
             String description = resultSet.getString("description");
             String imagePath = resultSet.getString("image_path");
             int price = resultSet.getInt("price");
+            int type = resultSet.getInt("type");
 
-            PizzaModel pizza = new PizzaModel(i,name,description,imagePath,price);
+            PizzaModel pizza = new PizzaModel(i,name,description,imagePath,price,type);
             ll.add(pizza);
         }
         return ll;
     }
 
-    public List<SauceModel> getSauceByKeyword(Connection connection,String keyword) throws SQLException {
+    public void addToBucketList(Connection connection,Integer pizzaId,Integer userId) throws SQLException {
 
-        String query = "select * from sauce where name ilike '%" + keyword + "%';";
+        String query = "insert into user_menu(user_id,menu_id) values (" + userId + "," + pizzaId + ");";
         Statement statement = connection.createStatement();
+        statement.executeUpdate(query);
 
-        ResultSet resultSet = statement.executeQuery(query);
+    }
 
-        List<SauceModel> ll = new ArrayList<>();
+    public void deleteFromBucket(Connection connection,Integer bucketId,Integer userId) throws SQLException {
 
-        while (resultSet.next()){
-            int i = resultSet.getInt("id");
-            String name = resultSet.getString("name");
-            String description = resultSet.getString("description");
-            String imagePath = resultSet.getString("image_path");
-            int price = resultSet.getInt("price");
+        String query = "delete from user_menu where user_id = " + userId + " and menu_id = " + bucketId + ";";
+        Statement statement = connection.createStatement();
+        statement.executeUpdate(query);
 
-            SauceModel sauce = new SauceModel(i,name,description,imagePath,price);
-            ll.add(sauce);
+    }
+    public List<PizzaModel> getMenuForUser(Connection connection,Integer userId) throws SQLException {
+
+        String query = "select * from user_menu where user_id = " + userId + ";";
+        Statement statement = connection.createStatement();
+        ResultSet bucket = statement.executeQuery(query);
+
+        List<PizzaModel> bucketList = new ArrayList<>();
+
+        while (bucket.next()){
+            int id = bucket.getInt("menu_id");
+
+            PizzaModel pizzaModel = findPizzaById(connection,id);
+            bucketList.add(pizzaModel);
+
         }
-        return ll;
+        return bucketList;
     }
 }

@@ -79,4 +79,10 @@ public class UserController {
 
         return "register";
     }
+    @GetMapping("/logOut")
+    public String logOut(Model model){
+        userName = null;
+
+        return "redirect:/";
+    }
 }

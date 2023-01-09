@@ -2,8 +2,9 @@ package com.example.bdtema.controllers;
 
 import com.example.bdtema.models.DeliveryModel;
 import com.example.bdtema.models.PizzaModel;
-import com.example.bdtema.models.SauceModel;
 import com.example.bdtema.repositories.DeliveryRepository;
+import com.example.bdtema.repositories.PizzaRepository;
+import com.example.bdtema.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,9 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.List;
 
-import static com.example.bdtema.controllers.PizzaController.pizzaModels;
-import static com.example.bdtema.controllers.PizzaController.sauceModels;
 import static com.example.bdtema.controllers.UserController.userName;
 
 @Controller
@@ -25,6 +25,8 @@ public class DeliveryController {
 
 
     private final DeliveryRepository deliveryRepository;
+    private final PizzaRepository pizzaRepository;
+    private final UserRepository userRepository;
     private static final String url = "jdbc:postgresql://localhost:5432/pizza";
     private static final String uname = "postgres";
     private static final String password = "admin";
@@ -39,8 +41,10 @@ public class DeliveryController {
     }
 
     @Autowired
-    public DeliveryController(DeliveryRepository deliveryRepository) {
+    public DeliveryController(DeliveryRepository deliveryRepository, PizzaRepository pizzaRepository, UserRepository userRepository) {
         this.deliveryRepository = deliveryRepository;
+        this.pizzaRepository = pizzaRepository;
+        this.userRepository = userRepository;
     }
 
     @GetMapping("/delivery")
@@ -71,16 +75,15 @@ public class DeliveryController {
 
         model.addAttribute("userName",userName);
         model.addAttribute("userDelivery",deliveryRepository.getDeliveriesForUser(con,userName));
-        model.addAttribute("bucketPizzas",pizzaModels);
-        model.addAttribute("bucketSauces",sauceModels);
+        Integer id = userRepository.getIdByUsername(con,userName);
+        List<PizzaModel> bucketList = pizzaRepository.getMenuForUser(con,id);
+        model.addAttribute("bucketList",bucketList);
 
-        Integer sumOfList = 0;
-        for (PizzaModel pizza : pizzaModels){
-            sumOfList += pizza.getPrice();
-        }
-        for (SauceModel sauce : sauceModels){
-            sumOfList += sauce.getPrice();
-        }
+       Integer sumOfList = 0;
+
+       for (PizzaModel bucket :bucketList){
+           sumOfList += bucket.getPrice();
+       }
 
         model.addAttribute("sumOfBucket",sumOfList);
 
@@ -123,6 +126,13 @@ public class DeliveryController {
         existingDelivery.setDate(deliveryModel.getDate());
 
         deliveryRepository.updateDelivery(con,existingDelivery);
+
+        return "redirect:/deliveries";
+    }
+    @GetMapping("/deleteMenu/{id}")
+    public String deleteFromBucketList(@PathVariable Integer id) throws SQLException {
+
+        pizzaRepository.deleteFromBucket(con,id,userRepository.getIdByUsername(con,userName));
 
         return "redirect:/deliveries";
     }
